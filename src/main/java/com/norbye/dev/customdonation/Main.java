@@ -12,8 +12,8 @@ public class Main extends JavaPlugin {
     @Override
     public void onEnable() {
         // Set the default config
-        config.addDefault("api-root", "https://example.com/api.php");
-        config.addDefault("interval-seconds", 5);
+        config.addDefault("api.root", "https://example.com/api.php");
+        config.addDefault("api.poll-seconds", 5);
         config.options().copyDefaults(true);
         this.saveDefaultConfig();
 
@@ -21,7 +21,7 @@ public class Main extends JavaPlugin {
 
         // Initialize the looper searching for new donations
         Timer timer = new Timer();
-        int intervalSeconds = config.getInt("interval-seconds", 5);
+        int intervalSeconds = config.getInt("api.poll-seconds", 5);
         timer.schedule(new ApiTask(), 5000, intervalSeconds * 1000);
     }
 

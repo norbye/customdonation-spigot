@@ -1,5 +1,6 @@
 # Custom Donation v1.0.0
 config-version: 1
+debug: false
 api:
   root: https://example.com/api.php
-  interval: 5
+  poll-interval: 5 # poll intervall in seconds
