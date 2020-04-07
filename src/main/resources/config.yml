@@ -1,0 +1,5 @@
+# Custom Donation v1.0.0
+config-version: 1
+api:
+  root: https://example.com/api.php
+  interval: 5

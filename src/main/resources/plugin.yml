@@ -1,0 +1,19 @@
+name: CustomDonation
+version: 1.0
+main: com.norbye.dev.customdonation.Main
+description: Plugin to give rewards to users with a reward-code
+api-version: 1.15
+author: eybro <jonna9817@gmail.com>
+website: dev.norbye.com
+
+commands:
+  customdonation:
+    description: CustomDonation version
+    usage: /invitereward
+    permission: customdonation.version
+    permission-message: You do not have permission to use this command.
+
+permissions:
+  customdonation.version:
+    default: true
+    description: Allows you to use the command /customdonation
