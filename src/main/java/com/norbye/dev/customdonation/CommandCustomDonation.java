@@ -19,19 +19,16 @@ public class CommandCustomDonation implements CommandExecutor {
         commandSender.sendMessage(ChatColor.GOLD + "[" + pdf.getName() + "] v" + pdf.getVersion());
 
         if ("reload".equalsIgnoreCase(args[0])) {
-            reloadPlugin(commandSender, true);
+            reloadPlugin();
+            commandSender.sendMessage(ChatColor.GOLD + pdf.getName() + " reloaded");
         }
         return true;
     }
 
-    private void reloadPlugin(CommandSender commandSender, boolean notifySender) {
-        PluginDescriptionFile pdf = plugin.getDescription();
+    private void reloadPlugin() {
         // Reload the config
         plugin.reloadConfig();
         // Restart the task
         plugin.initializeTimer();
-        if (notifySender) {
-            commandSender.sendMessage(ChatColor.GOLD + pdf.getName() + " reloaded");
-        }
     }
 }
