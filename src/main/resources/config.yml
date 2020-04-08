@@ -4,3 +4,4 @@ debug: false
 api:
   root: https://example.com/api.php
   poll-interval: 5 # poll intervall in seconds
+  pass-key:
