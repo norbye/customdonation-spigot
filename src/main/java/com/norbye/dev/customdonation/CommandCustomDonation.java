@@ -4,7 +4,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginDescriptionFile;
 
 public class CommandCustomDonation implements CommandExecutor {
@@ -18,6 +17,21 @@ public class CommandCustomDonation implements CommandExecutor {
     public boolean onCommand(CommandSender commandSender, Command cmd, String label, String[] args) {
         PluginDescriptionFile pdf = plugin.getDescription();
         commandSender.sendMessage(ChatColor.GOLD + "[" + pdf.getName() + "] v" + pdf.getVersion());
+
+        if ("reload".equalsIgnoreCase(args[0])) {
+            reloadPlugin(commandSender, true);
+        }
         return true;
+    }
+
+    private void reloadPlugin(CommandSender commandSender, boolean notifySender) {
+        PluginDescriptionFile pdf = plugin.getDescription();
+        // Reload the config
+        plugin.reloadConfig();
+        // Restart the task
+        plugin.initializeTimer();
+        if (notifySender) {
+            commandSender.sendMessage(ChatColor.GOLD + pdf.getName() + " reloaded");
+        }
     }
 }

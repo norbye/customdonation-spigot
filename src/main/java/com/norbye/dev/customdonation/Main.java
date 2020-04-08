@@ -7,22 +7,25 @@ import java.util.Timer;
 
 public class Main extends JavaPlugin {
 
-    FileConfiguration config = getConfig();
+    public Timer timer = new Timer();
 
     @Override
     public void onEnable() {
         // Set the default config
-        config.addDefault("api.root", "https://example.com/api.php");
-        config.addDefault("api.poll-seconds", 5);
-        config.options().copyDefaults(true);
+        getConfig().options().copyDefaults(true);
         this.saveDefaultConfig();
 
         this.getCommand("customdonation").setExecutor(new CommandCustomDonation(this));
 
         // Initialize the looper searching for new donations
-        Timer timer = new Timer();
-        int intervalSeconds = config.getInt("api.poll-seconds", 5);
-        timer.schedule(new ApiTask(), 5000, intervalSeconds * 1000);
+        initializeTimer();
+    }
+
+    public void initializeTimer() {
+        timer.cancel();
+        timer.purge();
+        int intervalSeconds = getConfig().getInt("api.poll-interval", 20);
+        timer.schedule(new ApiTask(this), 5000, intervalSeconds * 1000);
     }
 
     @Override
