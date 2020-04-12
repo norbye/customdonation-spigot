@@ -24,6 +24,7 @@ public class Main extends JavaPlugin {
     public void initializeTimer() {
         timer.cancel();
         timer.purge();
+        timer = new Timer();
         int intervalSeconds = getConfig().getInt("api.poll-interval", 20);
         timer.schedule(new ApiTask(this), 5000, intervalSeconds * 1000);
     }
