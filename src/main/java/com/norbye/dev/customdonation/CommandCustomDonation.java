@@ -21,6 +21,9 @@ public class CommandCustomDonation implements CommandExecutor {
         if ("reload".equalsIgnoreCase(args[0])) {
             reloadPlugin();
             commandSender.sendMessage(ChatColor.GOLD + pdf.getName() + " reloaded");
+            if (plugin.getConfig().getBoolean("debug", false)) {
+                commandSender.sendMessage("Debug mode enabled");
+            }
         }
         return true;
     }
