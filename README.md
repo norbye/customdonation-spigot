@@ -30,9 +30,6 @@ api:
 ### Web api
 API v1
 
-Web APIs built to work with the plugin:
-- [norbye/CustomDonation-web](#)
-
 Both endpoints support a simple authentication in form of a header variable sent with the requests.
 Auth can be chosen whether to use or not. `HTTP_PASS_KEY` matches `api.pass-key` from the plugin.conf
 
