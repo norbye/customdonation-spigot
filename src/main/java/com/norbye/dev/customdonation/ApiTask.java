@@ -53,8 +53,11 @@ class ApiTask extends TimerTask {
         try {
             fetchActiveDonations();
         } catch (IOException e) {
-            debug("fectactivedonations failed");
-            e.printStackTrace();
+            error("Failed to connect to API");
+            if (plugin.getConfig().getBoolean("debug", false)) {
+                e.printStackTrace();
+                return;
+            }
         } finally {
             try {;
                 httpClient.close();
@@ -72,40 +75,45 @@ class ApiTask extends TimerTask {
         request.addHeader("pass-key", passKey);
         request.addHeader(HttpHeaders.USER_AGENT, "Googlebot");
 
-        try (CloseableHttpResponse response = httpClient.execute(request)) {
+        CloseableHttpResponse response;
+        try {
+            response = httpClient.execute(request);
+        } catch (IOException e) {
+            error("Failed to connect to the API");
+            return;
+        }
 
-            // Get HttpResponse Status
-            int statusCode = response.getStatusLine().getStatusCode();
-            if (statusCode != 200) {
-                debug("fetchActiveDonations unsuccessfull request " + statusCode);
+        // Get HttpResponse Status
+        int statusCode = response.getStatusLine().getStatusCode();
+        if (statusCode != 200) {
+            debug("fetchActiveDonations unsuccessfull request " + statusCode);
+        }
+
+        HttpEntity entity = response.getEntity();
+        Header headers = entity.getContentType();
+
+        if (entity == null) {
+            return;
+        }
+
+        // return it as a String
+        String result = EntityUtils.toString(entity);
+        debug("fetchActiveDonations res \n" + result);
+        // JSON result
+        JSONObject res = new JSONObject(result);
+        JSONArray donations = res.getJSONArray("donations");
+        for (int i = 0; i < donations.length(); i++) {
+            JSONObject donation = donations.getJSONObject(i);
+            JSONArray jCommands = donation.getJSONArray("commands");
+            String[] commands = new String[jCommands.length()];
+            for (int k = 0; k < jCommands.length(); k++) {
+                commands[k] = jCommands.getString(k);
             }
-
-            HttpEntity entity = response.getEntity();
-            Header headers = entity.getContentType();
-
-            if (entity == null) {
-                return;
-            }
-
-            // return it as a String
-            String result = EntityUtils.toString(entity);
-            debug("fetchActiveDonations res \n" + result);
-            // JSON result
-            JSONObject res = new JSONObject(result);
-            JSONArray donations = res.getJSONArray("donations");
-            for (int i = 0; i < donations.length(); i++) {
-                JSONObject donation = donations.getJSONObject(i);
-                JSONArray jCommands = donation.getJSONArray("commands");
-                String[] commands = new String[jCommands.length()];
-                for (int k = 0; k < jCommands.length(); k++) {
-                    commands[k] = jCommands.getString(k);
-                }
-                executeDonation(
-                        donation.getInt("id"),
-                        donation.getString("username"),
-                        commands
-                );
-            }
+            executeDonation(
+                    donation.getInt("id"),
+                    donation.getString("username"),
+                    commands
+            );
         }
     }
 
