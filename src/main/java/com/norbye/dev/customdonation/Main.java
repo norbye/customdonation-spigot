@@ -1,5 +1,6 @@
 package com.norbye.dev.customdonation;
 
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -22,15 +23,19 @@ public class Main extends JavaPlugin {
     }
 
     public void initializeTimer() {
-        timer.cancel();
-        timer.purge();
-        timer = new Timer();
+        Bukkit.getScheduler().cancelTasks(this);
         int intervalSeconds = getConfig().getInt("api.poll-interval", 20);
-        timer.schedule(new ApiTask(this), 5000, intervalSeconds * 1000);
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(
+                this,
+                new ApiTask(this),
+                20L * intervalSeconds,
+                20L * intervalSeconds
+        );
     }
 
     @Override
     public void onDisable() {
-        super.onDisable();
+        // Cancel tasks
+        Bukkit.getScheduler().cancelTasks(this);
     }
 }
