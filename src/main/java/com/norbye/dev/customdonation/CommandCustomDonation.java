@@ -29,6 +29,9 @@ public class CommandCustomDonation implements CommandExecutor {
     }
 
     private void reloadPlugin() {
+        // Initialize config if it was deleted
+        plugin.getConfig().options().copyDefaults(true);
+        plugin.saveDefaultConfig();
         // Reload the config
         plugin.reloadConfig();
         // Restart the task
