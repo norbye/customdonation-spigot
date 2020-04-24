@@ -1,5 +1,6 @@
 package com.norbye.dev.customdonation;
 
+import com.google.gson.*;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHeaders;
@@ -15,8 +16,6 @@ import org.apache.http.util.EntityUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.ConsoleCommandSender;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -100,18 +99,19 @@ class ApiTask extends TimerTask {
         String result = EntityUtils.toString(entity);
         debug("fetchActiveDonations res \n" + result);
         // JSON result
-        JSONObject res = new JSONObject(result);
-        JSONArray donations = res.getJSONArray("donations");
-        for (int i = 0; i < donations.length(); i++) {
-            JSONObject donation = donations.getJSONObject(i);
-            JSONArray jCommands = donation.getJSONArray("commands");
-            String[] commands = new String[jCommands.length()];
-            for (int k = 0; k < jCommands.length(); k++) {
-                commands[k] = jCommands.getString(k);
+        JsonParser jsonParser = new JsonParser();
+        JsonObject res = jsonParser.parse(result).getAsJsonObject();
+        JsonArray donations = res.getAsJsonArray("donations");
+        for (int i = 0; i < donations.size(); i++) {
+            JsonObject donation = donations.get(i).getAsJsonObject();
+            JsonArray jCommands = donation.getAsJsonArray("commands");
+            String[] commands = new String[jCommands.size()];
+            for (int k = 0; k < jCommands.size(); k++) {
+                commands[k] = jCommands.get(k).getAsString();
             }
             executeDonation(
-                    donation.getInt("id"),
-                    donation.getString("username"),
+                    donation.get("id").getAsInt(),
+                    donation.get("username").getAsString(),
                     commands
             );
         }
