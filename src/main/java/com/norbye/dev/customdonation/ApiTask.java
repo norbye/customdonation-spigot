@@ -120,17 +120,9 @@ class ApiTask extends TimerTask {
     private void executeDonation(int donationId, String username, String[] commands) {
         ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
         for (int i = 0; i < commands.length; i++) {
-            String command = "/" + commands[i];
-            try {
-                log("Command: " + command);
-                boolean success = Bukkit.getScheduler().callSyncMethod(
-                        plugin,
-                        () -> Bukkit.dispatchCommand(console, command)
-                ).get();
-            } catch (InterruptedException | ExecutionException e) {
-                debug("Failed to send command");
-                e.printStackTrace();
-            }
+            String command = commands[i];
+            log("Command: " + command);
+            Bukkit.dispatchCommand(console, command);
         }
 
         // Update the donation info
